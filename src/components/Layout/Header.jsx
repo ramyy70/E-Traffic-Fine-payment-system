@@ -1,24 +1,38 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ChevronDown, Globe, Menu } from 'lucide-react';
+import { ChevronDown, Globe, Menu, Moon, Sun } from 'lucide-react';
 import { useLang } from '../../context/LangContext';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import Notifications from './Notifications';
 
-const pageTitles = {
-    driverHome: 'Driver Home',
-    policeHome: 'Police Home',
-    payFines: 'Pay Fines',
-    history: 'Fine History',
-    complaints: 'Complaints',
-    policeDashboard: 'Issued Fines',
-    issueFine: 'Issue Fine',
-    adminDashboard: 'Complaints Queue',
-    audit: 'Audit Log',
+const pageTitleKeys = {
+    driverHome: 'driverHomeTitle',
+    policeHome: 'policeHomeTitle',
+    payFines: 'driverTilePay',
+    history: 'history',
+    complaints: 'complaints',
+    policeDashboard: 'policeTileHistory',
+    issueFine: 'policeTileIssue',
+    adminDashboard: 'adminDashboard',
+    audit: 'auditLog',
+};
+
+const languageLabelKeys = {
+    en: 'langEnglish',
+    si: 'langSinhala',
+    ta: 'langTamil',
+};
+
+const roleLabelKeys = {
+    driver: 'roleDriver',
+    police: 'rolePolice',
+    admin: 'roleAdmin',
 };
 
 const Header = ({ toggleSidebar, currentPage }) => {
     const { t, lang, switchLang } = useLang();
     const { user } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const [langMenuOpen, setLangMenuOpen] = useState(false);
     const langRef = useRef(null);
 
@@ -33,16 +47,20 @@ const Header = ({ toggleSidebar, currentPage }) => {
         return () => document.removeEventListener('mousedown', onOutsideClick);
     }, []);
 
-    const currentLabel = pageTitles[currentPage] || t('dashboard');
+    const currentLabel = t(pageTitleKeys[currentPage] || 'dashboard');
+    const isDark = theme === 'dark';
 
     return (
-        <header className="sticky top-0 z-30 border-b border-slate-200/90 bg-white/80 px-4 py-3 backdrop-blur-xl sm:px-6">
+        <header
+            className="sticky top-0 z-30 border-b border-slate-200/90 px-4 py-3 backdrop-blur-xl sm:px-6"
+            style={{ backgroundColor: 'var(--header-bg)' }}
+        >
             <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3">
                 <div className="flex min-w-0 items-center gap-3">
                     <button
                         className="ring-focus inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 lg:hidden"
                         onClick={toggleSidebar}
-                        aria-label="Open navigation menu"
+                        aria-label={t('openNavigation')}
                     >
                         <Menu className="h-5 w-5" />
                     </button>
@@ -54,6 +72,16 @@ const Header = ({ toggleSidebar, currentPage }) => {
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-3">
+                    <button
+                        type="button"
+                        onClick={toggleTheme}
+                        className="ring-focus inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50"
+                        aria-label={isDark ? t('switchToLightMode') : t('switchToDarkMode')}
+                        title={isDark ? t('switchToLightMode') : t('switchToDarkMode')}
+                    >
+                        {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                    </button>
+
                     <Notifications />
 
                     <div className="relative" ref={langRef}>
@@ -83,7 +111,7 @@ const Header = ({ toggleSidebar, currentPage }) => {
                                                 : 'text-slate-600 hover:bg-slate-50'
                                         }`}
                                     >
-                                        {language === 'en' ? 'English' : language === 'si' ? 'Sinhala' : 'Tamil'}
+                                        {t(languageLabelKeys[language])}
                                     </button>
                                 ))}
                             </div>
@@ -97,7 +125,9 @@ const Header = ({ toggleSidebar, currentPage }) => {
                             </div>
                             <div className="min-w-0">
                                 <p className="truncate text-xs font-semibold text-slate-800">{user.name}</p>
-                                <p className="truncate text-[11px] uppercase tracking-wide text-slate-500">{user.role}</p>
+                                <p className="truncate text-[11px] uppercase tracking-wide text-slate-500">
+                                    {t(roleLabelKeys[user.role] || user.role)}
+                                </p>
                             </div>
                         </div>
                     )}

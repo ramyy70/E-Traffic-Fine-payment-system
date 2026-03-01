@@ -1,14 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useContext } from 'react';
+import { driverUserIdFromNic, isValidSriLankanNic, normalizeNic } from '../utils/identity';
 
 const AuthContext = createContext();
-
-// Driver login: validate Sri Lankan-style NIC
-const isDriverNic = (value) => {
-    const nic = value.trim().toUpperCase();
-    // Old format: 9 digits + V/X, New format: 12 digits
-    return (/^\d{9}[VX]$/i.test(nic) || /^\d{12}$/.test(nic));
-};
 
 // Police login: Officer ID with letters, digits and optional special chars (e.g. POL-101, COP/55)
 const isOfficerId = (value) => {
@@ -27,17 +21,18 @@ export const AuthProvider = ({ children }) => {
 
     const login = (rawInput) => {
         const input = (rawInput || '').trim();
+        const normalizedNic = normalizeNic(input);
 
         if (!input) {
-            return { success: false, message: 'Please enter your NIC / Login ID' };
+            return { success: false, messageKey: 'errEnterId' };
         }
 
-        if (isDriverNic(input)) {
+        if (isValidSriLankanNic(normalizedNic)) {
             const driverUser = {
-                id: `driver-${input.toUpperCase()}`,
+                id: driverUserIdFromNic(normalizedNic),
                 name: 'Driver User',
                 role: 'driver',
-                nic: input.toUpperCase(),
+                nic: normalizedNic,
             };
             setUser(driverUser);
             return { success: true };
@@ -65,7 +60,7 @@ export const AuthProvider = ({ children }) => {
             return { success: true };
         }
 
-        return { success: false, message: 'Invalid NIC / Officer ID / Admin ID' };
+        return { success: false, messageKey: 'errInvalidId' };
     };
 
     const logout = () => {

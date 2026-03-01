@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { DataProvider } from './context/DataContext';
 import { LangProvider } from './context/LangContext';
+import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/Layout/Layout';
 
 import DriverDashboard from './pages/DriverDashboard';
@@ -67,12 +68,14 @@ const AppContent = () => {
 
 export default function App() {
     return (
-        <LangProvider>
-            <DataProvider>
-                <AuthProvider>
-                    <AppContent />
-                </AuthProvider>
-            </DataProvider>
-        </LangProvider>
+        <ThemeProvider>
+            <LangProvider>
+                <DataProvider>
+                    <AuthProvider>
+                        <AppContent />
+                    </AuthProvider>
+                </DataProvider>
+            </LangProvider>
+        </ThemeProvider>
     );
 }

@@ -7,8 +7,13 @@ const LangContext = createContext();
 export const LangProvider = ({ children }) => {
   const [lang, setLang] = useState("en");
 
-  const t = (key) => {
-    return translations[lang]?.[key] || key;
+  const t = (key, params = {}) => {
+    const template = translations[lang]?.[key] || translations.en?.[key] || key;
+    if (typeof template !== "string") return template;
+    return template.replace(/\{(\w+)\}/g, (_, token) => {
+      const value = params[token];
+      return value === undefined || value === null ? `{${token}}` : String(value);
+    });
   };
 
   const switchLang = (newLang) => {

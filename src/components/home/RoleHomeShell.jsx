@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight, Info, PhoneCall, Search, ShieldCheck } from 'lucide-react';
+import { useLang } from '../../context/LangContext';
 
 const Pill = ({ children }) => (
     <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white">
@@ -8,7 +9,7 @@ const Pill = ({ children }) => (
     </div>
 );
 
-const PrimarySearch = ({ label, placeholder, value, onChange, onSubmit, cta }) => (
+const PrimarySearch = ({ label, placeholder, value, onChange, onSubmit, cta, hint }) => (
     <form
         onSubmit={(event) => {
             event.preventDefault();
@@ -38,7 +39,7 @@ const PrimarySearch = ({ label, placeholder, value, onChange, onSubmit, cta }) =
             </button>
         </div>
         <p className="mt-2 text-xs text-white/70 sm:text-sm">
-            You can search by NIC, vehicle number, or fine reference.
+            {hint}
         </p>
     </form>
 );
@@ -84,7 +85,7 @@ const Step = ({ n, title, desc }) => (
 );
 
 export default function RoleHomeShell({
-    badge = 'Official Service',
+    badge,
     titleLine1,
     titleAccent,
     subtitle,
@@ -93,23 +94,40 @@ export default function RoleHomeShell({
     searchPlaceholder,
     searchValue,
     setSearchValue,
-    searchCta = 'Check',
+    searchCta,
+    searchHint,
     onSearch,
     actions = [],
     stats = [],
-    stepsTitle = 'How It Works',
-    stepsSubtitle = 'Three simple steps to complete your task.',
+    stepsTitle,
+    stepsSubtitle,
     steps = [],
-    emergencyTitle = 'Emergency',
-    emergencyDesc = 'Instant access to Police and Ambulance services.',
+    emergencyTitle,
+    emergencyDesc,
     emergencyItems = [
-        { label: 'Police', value: '119' },
-        { label: 'Ambulance', value: '1990' },
+        { label: '', value: '119' },
+        { label: '', value: '1990' },
     ],
 }) {
+    const { t } = useLang();
+    const resolvedBadge = badge || t('officialService');
+    const resolvedSearchCta = searchCta || t('check');
+    const resolvedSearchHint = searchHint || t('searchByNicVehicleFine');
+    const resolvedStepsTitle = stepsTitle || t('howItWorks');
+    const resolvedStepsSubtitle = stepsSubtitle || t('howItWorksSub');
+    const resolvedEmergencyTitle = emergencyTitle || t('emergency');
+    const resolvedEmergencyDesc = emergencyDesc || t('emergencyDesc');
+    const resolvedEmergencyItems = emergencyItems.map((item, idx) => {
+        if (item.label) return item;
+        return {
+            ...item,
+            label: idx === 0 ? t('police') : t('ambulance'),
+        };
+    });
+
     return (
         <div className="page-container">
-            <section className="relative overflow-hidden rounded-3xl border border-slate-700/50 bg-gradient-to-br from-[#0b2447] via-[#15427f] to-[#0e5f7d] px-6 pb-7 pt-7 shadow-2xl sm:px-8 sm:pb-10 sm:pt-10">
+            <section className="role-hero relative overflow-hidden rounded-3xl border border-slate-700/50 bg-gradient-to-br from-[#0b2447] via-[#15427f] to-[#0e5f7d] px-6 pb-7 pt-7 shadow-2xl sm:px-8 sm:pb-10 sm:pt-10">
                 <div className="pointer-events-none absolute inset-0">
                     <div className="animate-float-soft absolute -right-20 -top-20 h-72 w-72 rounded-full bg-cyan-300/15 blur-3xl" />
                     <div className="absolute -left-20 bottom-0 h-72 w-72 rounded-full bg-blue-200/12 blur-3xl" />
@@ -117,7 +135,7 @@ export default function RoleHomeShell({
 
                 <div className="relative grid items-start gap-8 xl:grid-cols-12">
                     <div className="xl:col-span-7">
-                        <Pill>{badge}</Pill>
+                        <Pill>{resolvedBadge}</Pill>
 
                         <h1 className="mt-5 text-4xl font-extrabold leading-[1.06] text-white sm:text-5xl xl:text-6xl">
                             {titleLine1}
@@ -132,7 +150,8 @@ export default function RoleHomeShell({
                             value={searchValue}
                             onChange={setSearchValue}
                             onSubmit={onSearch}
-                            cta={searchCta}
+                            cta={resolvedSearchCta}
+                            hint={resolvedSearchHint}
                         />
                     </div>
 
@@ -140,7 +159,7 @@ export default function RoleHomeShell({
                         <div className="rounded-3xl border border-white/20 bg-white/10 p-4 backdrop-blur">
                             {illustration || (
                                 <div className="flex h-56 items-center justify-center rounded-2xl border border-white/15 bg-white/5 text-sm font-semibold text-white/70">
-                                    Illustration Placeholder
+                                    {t('illustrationPlaceholder')}
                                 </div>
                             )}
                         </div>
@@ -171,11 +190,11 @@ export default function RoleHomeShell({
                 </section>
             )}
 
-            <section className="surface-card">
-                <div className="text-center">
-                    <h2 className="text-3xl font-bold text-slate-900">{stepsTitle}</h2>
-                    <p className="mt-2 text-sm text-slate-500 sm:text-base">{stepsSubtitle}</p>
-                </div>
+                <section className="surface-card">
+                    <div className="text-center">
+                        <h2 className="text-3xl font-bold text-slate-900">{resolvedStepsTitle}</h2>
+                        <p className="mt-2 text-sm text-slate-500 sm:text-base">{resolvedStepsSubtitle}</p>
+                    </div>
 
                 <div className="mt-6 grid gap-4 lg:grid-cols-3">
                     {steps.map((step, idx) => (
@@ -190,9 +209,9 @@ export default function RoleHomeShell({
                                 <Info className="h-5 w-5" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-slate-900">Help and Support</h3>
+                                <h3 className="text-lg font-bold text-slate-900">{t('helpAndSupport')}</h3>
                                 <p className="mt-1 text-sm text-slate-600">
-                                    Use the complaints section if details are incorrect. Keep your payment receipt for reference.
+                                    {t('helpAndSupportDesc')}
                                 </p>
                             </div>
                         </div>
@@ -204,13 +223,13 @@ export default function RoleHomeShell({
                                 <PhoneCall className="h-5 w-5" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-slate-900">{emergencyTitle}</h3>
-                                <p className="mt-1 text-sm text-slate-600">{emergencyDesc}</p>
+                                <h3 className="text-lg font-bold text-slate-900">{resolvedEmergencyTitle}</h3>
+                                <p className="mt-1 text-sm text-slate-600">{resolvedEmergencyDesc}</p>
                             </div>
                         </div>
 
                         <div className="mt-4 space-y-2.5">
-                            {emergencyItems.map((item) => (
+                            {resolvedEmergencyItems.map((item) => (
                                 <div
                                     key={item.value}
                                     className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-3"
@@ -224,7 +243,7 @@ export default function RoleHomeShell({
                 </div>
 
                 <footer className="mt-8 border-t border-slate-200 pt-5 text-center text-xs font-medium text-slate-500">
-                    {new Date().getFullYear()} E-Traffic Services. Secure Digital Operations.
+                    {new Date().getFullYear()} {t('footerSecureOps')}
                 </footer>
             </section>
         </div>

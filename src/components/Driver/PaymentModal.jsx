@@ -1,8 +1,10 @@
 import React, { useMemo, useState } from 'react';
-import { CheckCircle2, CreditCard, Loader2, QrCode } from 'lucide-react';
+import { CheckCircle2, CreditCard, FileDown, Loader2, QrCode } from 'lucide-react';
 import Modal from '../UI/Modal';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
+import { useLang } from '../../context/LangContext';
+import { downloadOfficialReceiptPdf } from '../../utils/receiptPdf';
 
 const VisaIcon = ({ className = '' }) => (
     <svg viewBox="0 0 48 16" aria-hidden="true" className={className}>
@@ -32,36 +34,70 @@ const MasterCardIcon = ({ className = '' }) => (
 const PaymentModal = ({ isOpen, onClose, fine }) => {
     const { payFine } = useData();
     const { user } = useAuth();
+    const { t } = useLang();
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [method, setMethod] = useState('card');
-    const [step, setStep] = useState('details'); // details | otp
+    const [step, setStep] = useState('details');
     const [otp, setOtp] = useState('');
     const [generatedOtp, setGeneratedOtp] = useState('');
-    const [error, setError] = useState('');
+    const [errorKey, setErrorKey] = useState('');
     const [cardNumber, setCardNumber] = useState('');
-    const [cardScheme, setCardScheme] = useState('Visa'); // 'Visa' | 'MasterCard'
+    const [cardScheme, setCardScheme] = useState('Visa');
+    const [receiptData, setReceiptData] = useState(null);
+    const [pdfDownloaded, setPdfDownloaded] = useState(false);
 
     const maskedNic = useMemo(() => {
         const nic = (fine?.offenderNic || '').trim();
-        if (!nic) return 'Not captured';
+        if (!nic) return t('notCaptured');
         if (nic.length <= 4) return '****';
         return `${nic.slice(0, 4)}****${nic.slice(-2)}`;
-    }, [fine?.offenderNic]);
+    }, [fine?.offenderNic, t]);
+
+    const createReceiptNo = () => `REC-${Date.now()}-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`;
+    const createTransactionId = () => {
+        if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') return `TX-${crypto.randomUUID()}`;
+        return `TX-${Date.now()}-${Math.floor(Math.random() * 1e9)}`;
+    };
 
     const completePayment = () => {
         if (!fine) return;
         setLoading(true);
+
+        const receiptNo = createReceiptNo();
+        const transactionId = createTransactionId();
+        const paidAt = new Date().toISOString();
+        const officialReceipt = {
+            fineId: fine.id,
+            receiptNo,
+            transactionId,
+            paidAt,
+            violation: fine.violation || t('unspecifiedViolation'),
+            amount: Number(fine.amount || 0),
+            location: fine.location || t('notSpecified'),
+            vehicleNo: fine.vehicleNo || t('notSpecified'),
+            offenderNic: maskedNic,
+            paymentMethod: method === 'qr' ? 'LankaQR' : cardScheme,
+            payerId: user?.id || 'N/A',
+        };
+
         payFine(fine.id, {
             method,
             channel: method === 'qr' ? 'lankaqr' : 'card',
+            receiptNo,
+            transactionId,
             payerUserId: user?.id || null,
             meta: {
                 fineId: fine.id,
                 maskedNic,
                 cardScheme: method === 'card' ? cardScheme : null,
-            }
+            },
         });
+
+        const downloaded = downloadOfficialReceiptPdf(officialReceipt);
+        setReceiptData(officialReceipt);
+        setPdfDownloaded(downloaded);
+
         setLoading(false);
         setSuccess(true);
         setTimeout(() => {
@@ -71,10 +107,12 @@ const PaymentModal = ({ isOpen, onClose, fine }) => {
             setStep('details');
             setOtp('');
             setGeneratedOtp('');
-            setError('');
+            setErrorKey('');
             setCardNumber('');
             setCardScheme('Visa');
-        }, 1500);
+            setReceiptData(null);
+            setPdfDownloaded(false);
+        }, 2200);
     };
 
     const handleCardSubmit = (event) => {
@@ -86,35 +124,50 @@ const PaymentModal = ({ isOpen, onClose, fine }) => {
 
     if (success) {
         return (
-            <Modal isOpen={isOpen} onClose={onClose} title="Payment Successful">
+            <Modal isOpen={isOpen} onClose={onClose} title={t('paymentSuccessfulTitle')}>
                 <div className="py-7 text-center">
                     <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
                         <CheckCircle2 className="h-8 w-8" />
                     </div>
-                    <h4 className="mt-4 text-xl font-bold text-slate-900">Payment Confirmed</h4>
-                    <p className="mt-1 text-sm text-slate-600">Receipt generated for fine #{fine?.id}.</p>
+                    <h4 className="mt-4 text-xl font-bold text-slate-900">{t('paymentConfirmed')}</h4>
+                    <p className="mt-1 text-sm text-slate-600">
+                        {t('receiptGeneratedForFine')} #{fine?.id}.
+                    </p>
+                    <p className="mt-2 text-xs text-slate-500">
+                        {pdfDownloaded ? t('officialPdfDownloaded') : t('officialPdfDownloadFailed')}
+                    </p>
+                    {receiptData && (
+                        <button
+                            type="button"
+                            onClick={() => setPdfDownloaded(downloadOfficialReceiptPdf(receiptData))}
+                            className="btn-soft mx-auto mt-4"
+                        >
+                            <FileDown className="h-4 w-4" />
+                            {t('downloadOfficialPdf')}
+                        </button>
+                    )}
                 </div>
             </Modal>
         );
     }
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={`Pay Fine #${fine?.id || ''}`}>
+        <Modal isOpen={isOpen} onClose={onClose} title={`${t('payFine')} #${fine?.id || ''}`}>
             <div className="space-y-5">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Official fine details</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">{t('officialFineDetails')}</p>
                     <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-                        <span className="text-slate-500">Reference</span>
+                        <span className="text-slate-500">{t('reference')}</span>
                         <span className="text-right font-semibold text-slate-800">{fine?.id}</span>
-                        <span className="text-slate-500">Violation</span>
+                        <span className="text-slate-500">{t('violation')}</span>
                         <span className="text-right font-semibold text-slate-800">{fine?.violation}</span>
-                        <span className="text-slate-500">Date</span>
+                        <span className="text-slate-500">{t('date')}</span>
                         <span className="text-right font-semibold text-slate-800">{fine?.date}</span>
-                        <span className="text-slate-500">Location</span>
+                        <span className="text-slate-500">{t('location')}</span>
                         <span className="text-right font-semibold text-slate-800">{fine?.location}</span>
-                        <span className="text-slate-500">Vehicle</span>
-                        <span className="text-right font-semibold text-slate-800">{fine?.vehicleNo || 'Not specified'}</span>
-                        <span className="text-slate-500">NIC</span>
+                        <span className="text-slate-500">{t('vehicleLabel')}</span>
+                        <span className="text-right font-semibold text-slate-800">{fine?.vehicleNo || t('notSpecified')}</span>
+                        <span className="text-slate-500">{t('nicShort')}</span>
                         <span className="text-right font-semibold text-slate-800">{maskedNic}</span>
                     </div>
                 </div>
@@ -128,7 +181,7 @@ const PaymentModal = ({ isOpen, onClose, fine }) => {
                         }`}
                     >
                         <CreditCard className="mr-1 inline h-4 w-4" />
-                        Card
+                        {t('card')}
                     </button>
                     <button
                         type="button"
@@ -138,18 +191,18 @@ const PaymentModal = ({ isOpen, onClose, fine }) => {
                         }`}
                     >
                         <QrCode className="mr-1 inline h-4 w-4" />
-                        QR
+                        {t('qr')}
                     </button>
                 </div>
 
                 <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-700">Total Amount</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-700">{t('totalAmount')}</p>
                     <p className="mt-1 text-3xl font-extrabold text-blue-900">Rs. {Number(fine?.amount || 0).toLocaleString()}</p>
                 </div>
 
-                {error && (
+                {errorKey && (
                     <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
-                        {error}
+                        {t(errorKey)}
                     </div>
                 )}
 
@@ -158,36 +211,38 @@ const PaymentModal = ({ isOpen, onClose, fine }) => {
                         onSubmit={(event) => {
                             event.preventDefault();
                             if (!otp.trim()) {
-                                setError('Enter the OTP code.');
+                                setErrorKey('errEnterOtp');
                                 return;
                             }
                             if (otp.trim() !== generatedOtp) {
-                                setError('Invalid OTP code. Please try again.');
+                                setErrorKey('errInvalidOtp');
                                 return;
                             }
-                            setError('');
+                            setErrorKey('');
                             completePayment();
                         }}
                         className="space-y-4"
                     >
                         <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-                            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-amber-700">Security verification</p>
-                            <p className="mt-1 text-sm">We sent a one-time password (OTP) to your registered contact.</p>
-                            <p className="mt-1 text-xs text-amber-800">Demo OTP: <span className="font-bold">{generatedOtp}</span></p>
+                            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-amber-700">{t('securityVerification')}</p>
+                            <p className="mt-1 text-sm">{t('otpSentNotice')}</p>
+                            <p className="mt-1 text-xs text-amber-800">
+                                {t('demoOtp')}: <span className="font-bold">{generatedOtp}</span>
+                            </p>
                         </div>
 
                         <div>
-                            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">OTP Code</label>
+                            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('otpCode')}</label>
                             <input
                                 type="text"
                                 inputMode="numeric"
                                 maxLength={6}
-                                placeholder="6-digit code"
+                                placeholder={t('otpPlaceholder')}
                                 className="input-control"
                                 value={otp}
                                 onChange={(e) => {
                                     setOtp(e.target.value.replace(/\D/g, ''));
-                                    setError('');
+                                    setErrorKey('');
                                 }}
                                 required
                             />
@@ -201,20 +256,20 @@ const PaymentModal = ({ isOpen, onClose, fine }) => {
                                     const nextOtp = String(Math.floor(100000 + Math.random() * 900000));
                                     setGeneratedOtp(nextOtp);
                                     setOtp('');
-                                    setError('');
+                                    setErrorKey('');
                                 }}
                                 disabled={loading}
                             >
-                                Resend OTP
+                                {t('resendOtp')}
                             </button>
                             <button type="submit" disabled={loading} className="btn-primary w-full">
                                 {loading ? (
                                     <>
                                         <Loader2 className="h-4 w-4 animate-spin" />
-                                        Processing...
+                                        {t('processing')}
                                     </>
                                 ) : (
-                                    'Confirm & Pay'
+                                    t('confirmAndPay')
                                 )}
                             </button>
                         </div>
@@ -223,7 +278,7 @@ const PaymentModal = ({ isOpen, onClose, fine }) => {
                     <form onSubmit={handleCardSubmit} className="space-y-4">
                         <div>
                             <label className="mb-1 flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                <span>Card Number</span>
+                                <span>{t('cardNumber')}</span>
                                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-slate-700">
                                     {cardScheme}
                                 </span>
@@ -273,17 +328,17 @@ const PaymentModal = ({ isOpen, onClose, fine }) => {
 
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Expiry</label>
+                                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('expiry')}</label>
                                 <input type="text" placeholder="MM/YY" className="input-control" required />
                             </div>
                             <div>
-                                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">CVC</label>
+                                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">{t('cvc')}</label>
                                 <input type="password" placeholder="***" className="input-control" required />
                             </div>
                         </div>
 
                         <button type="submit" disabled={loading} className="btn-primary w-full">
-                            Continue
+                            {t('continue')}
                         </button>
                     </form>
                 ) : (
@@ -291,18 +346,18 @@ const PaymentModal = ({ isOpen, onClose, fine }) => {
                         <div className="mx-auto w-fit rounded-2xl border border-slate-200 bg-white p-3">
                             <img
                                 src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=pay_fine_${fine?.id}_amount_${fine?.amount}`}
-                                alt="QR code to pay fine"
+                                alt={t('qrPayAlt')}
                                 className="h-[180px] w-[180px]"
                             />
                         </div>
-                        <p className="text-sm text-slate-600">Scan this code with your banking app to confirm payment securely.</p>
+                        <p className="text-sm text-slate-600">{t('scanQrPrompt')}</p>
                         <button
                             type="button"
                             onClick={() => {
                                 const nextOtp = String(Math.floor(100000 + Math.random() * 900000));
                                 setGeneratedOtp(nextOtp);
                                 setStep('otp');
-                                setError('');
+                                setErrorKey('');
                             }}
                             disabled={loading}
                             className="btn-soft w-full"
@@ -310,10 +365,10 @@ const PaymentModal = ({ isOpen, onClose, fine }) => {
                             {loading ? (
                                 <>
                                     <Loader2 className="h-4 w-4 animate-spin" />
-                                    Verifying...
+                                    {t('verifying')}
                                 </>
                             ) : (
-                                'Continue'
+                                t('continue')
                             )}
                         </button>
                     </div>

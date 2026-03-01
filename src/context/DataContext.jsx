@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { initialFines, initialComplaints, initialNotifications } from '../data/mockData';
+import { driverUserIdFromNic, normalizeNic } from '../utils/identity';
 
 const DataContext = createContext();
 
@@ -77,22 +78,34 @@ export const DataProvider = ({ children }) => {
     }, [auditLog]);
 
     // Actions
-    const addNotification = (message, userId = null) => {
+    const addNotification = (messageInput, userId = null) => {
+        const isStructured = messageInput && typeof messageInput === 'object';
+        const message = isStructured ? messageInput.fallback || '' : messageInput;
+        const messageKey = isStructured ? messageInput.key || null : null;
+        const messageParams = isStructured ? messageInput.params || {} : {};
         const newNotif = {
             id: 'n' + Date.now(),
             userId,
             message,
+            messageKey,
+            messageParams,
             date: today(),
             read: false
         };
         setNotifications(prev => [newNotif, ...prev]);
     };
 
-    const addToLog = (action, details, user) => {
+    const addToLog = (action, detailsInput, user) => {
+        const isStructured = detailsInput && typeof detailsInput === 'object';
+        const details = isStructured ? detailsInput.fallback || '' : detailsInput;
+        const detailsKey = isStructured ? detailsInput.key || null : null;
+        const detailsParams = isStructured ? detailsInput.params || {} : {};
         const newLog = {
             id: 'al' + Date.now(),
             action,
             details,
+            detailsKey,
+            detailsParams,
             user,
             date: new Date().toISOString()
         };
@@ -100,13 +113,13 @@ export const DataProvider = ({ children }) => {
     };
 
     const issueFine = (data) => {
-        const nic = (data.nic || '').trim().toUpperCase();
+        const nic = normalizeNic(data.nic || '');
         const fineId = 'f' + Date.now();
 
         const newFine = {
             id: fineId,
             // Link fine to the same driver id format used in AuthContext
-            userId: nic ? `driver-${nic}` : null,
+            userId: driverUserIdFromNic(nic),
             violation: data.violationName,
             amount: Number(data.amount) || 0,
             date: today(),
@@ -120,8 +133,23 @@ export const DataProvider = ({ children }) => {
         };
 
         setFines(prev => [newFine, ...prev]);
-        addNotification(`New traffic fine ${fineId} issued for NIC ${nic || 'N/A'}`, newFine.userId);
-        addToLog('FINE_ISSUED', `Fine #${fineId} issued to NIC ${nic || 'N/A'}`, 'Officer');
+        addNotification(
+            {
+                key: 'notifFineIssued',
+                params: { fineId, nic: nic || 'N/A' },
+                fallback: `New traffic fine ${fineId} issued for NIC ${nic || 'N/A'}`,
+            },
+            newFine.userId
+        );
+        addToLog(
+            'FINE_ISSUED',
+            {
+                key: 'logFineIssued',
+                params: { fineId, nic: nic || 'N/A' },
+                fallback: `Fine #${fineId} issued to NIC ${nic || 'N/A'}`,
+            },
+            'Officer'
+        );
     };
 
     const createReceiptNo = () => `REC-${Date.now()}-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`;
@@ -154,8 +182,23 @@ export const DataProvider = ({ children }) => {
             };
         }));
 
-        addNotification(`Fine Payment Successful. Receipt #${receiptNo}`, paidFine?.userId || null);
-        addToLog('PAYMENT', `Fine #${fineId} paid. Receipt #${receiptNo}`, payment.payerUserId || 'Current User');
+        addNotification(
+            {
+                key: 'notifPaymentSuccessful',
+                params: { receiptNo },
+                fallback: `Fine Payment Successful. Receipt #${receiptNo}`,
+            },
+            paidFine?.userId || null
+        );
+        addToLog(
+            'PAYMENT',
+            {
+                key: 'logPayment',
+                params: { fineId, receiptNo },
+                fallback: `Fine #${fineId} paid. Receipt #${receiptNo}`,
+            },
+            payment.payerUserId || 'Current User'
+        );
     };
 
     const submitComplaint = (complaintData) => {
@@ -166,8 +209,20 @@ export const DataProvider = ({ children }) => {
             submittedDate: new Date().toISOString().split('T')[0]
         };
         setComplaints(prev => [...prev, newComplaint]);
-        addNotification('Complaint Submitted Successfully. Reference #' + newComplaint.id);
-        addToLog('COMPLAINT_SUBMIT', `Complaint #${newComplaint.id} submitted`, 'Current User');
+        addNotification({
+            key: 'notifComplaintSubmitted',
+            params: { complaintId: newComplaint.id },
+            fallback: `Complaint Submitted Successfully. Reference #${newComplaint.id}`,
+        });
+        addToLog(
+            'COMPLAINT_SUBMIT',
+            {
+                key: 'logComplaintSubmitted',
+                params: { complaintId: newComplaint.id },
+                fallback: `Complaint #${newComplaint.id} submitted`,
+            },
+            'Current User'
+        );
     };
 
     const updateComplaintStatus = (id, newStatus) => {
@@ -175,8 +230,20 @@ export const DataProvider = ({ children }) => {
             c.id === id ? { ...c, status: newStatus } : c
         ));
         // Ideally we would notify the specific user, but for demo we just add a notification globally or handled by UI
-        addNotification(`Complaint #${id} marked as ${newStatus}`);
-        addToLog('COMPLAINT_UPDATE', `Complaint #${id} ${newStatus}`, 'Admin');
+        addNotification({
+            key: 'notifComplaintStatusUpdated',
+            params: { complaintId: id, status: newStatus },
+            fallback: `Complaint #${id} marked as ${newStatus}`,
+        });
+        addToLog(
+            'COMPLAINT_UPDATE',
+            {
+                key: 'logComplaintUpdated',
+                params: { complaintId: id, status: newStatus },
+                fallback: `Complaint #${id} ${newStatus}`,
+            },
+            'Admin'
+        );
     };
 
     return (

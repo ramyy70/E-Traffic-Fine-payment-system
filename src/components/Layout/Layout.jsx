@@ -9,7 +9,7 @@ const Layout = ({ children, currentPage, setCurrentPage }) => {
     const openMobileMenu = () => setMobileMenuOpen(true);
 
     return (
-        <div className="app-shell-bg flex min-h-screen overflow-hidden">
+        <div className="app-shell-bg flex h-screen overflow-hidden">
             <Sidebar
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}

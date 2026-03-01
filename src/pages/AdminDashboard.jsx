@@ -11,7 +11,7 @@ const AdminDashboard = ({ view }) => {
             <section className="page-header">
                 <h1 className="page-title">{view === 'audit' ? t('auditLog') : t('adminDashboard')}</h1>
                 <p className="page-subtitle">
-                    Review complaint queues, apply final decisions, and keep the full event trail ready for compliance checks.
+                    {t('adminDashboardSub')}
                 </p>
             </section>
 

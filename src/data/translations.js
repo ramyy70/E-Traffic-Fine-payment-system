@@ -76,7 +76,298 @@ export const translations = {
       "Check whether a fine is paid (show receipt).",
     policeTipTitle: "Note",
     policeTip:
-      "Always verify NIC/License details before submitting a fine."
+      "Always verify NIC/License details before submitting a fine.",
+
+    // ---------------- LANGUAGE + ROLES ----------------
+    langEnglish: "English",
+    langSinhala: "Sinhala",
+    langTamil: "Tamil",
+    roleDriver: "Driver",
+    rolePolice: "Police",
+    roleAdmin: "Admin",
+    roleGuest: "Guest",
+
+    // ---------------- SHARED UI ----------------
+    openNavigation: "Open navigation menu",
+    closeNavigation: "Close navigation menu",
+    goRoleHome: "Go to role home page",
+    openNotifications: "Open notifications",
+    closeModal: "Close modal",
+    close: "Close",
+    themeLight: "Light",
+    themeDark: "Dark",
+    switchToLightMode: "Switch to light mode",
+    switchToDarkMode: "Switch to dark mode",
+    total: "total",
+    noNotifications: "No notifications.",
+    operations: "Operations",
+    user: "User",
+    police: "Police",
+    ambulance: "Ambulance",
+    fire: "Fire",
+    details: "Details",
+    timestamp: "Timestamp",
+    action: "Action",
+
+    // ---------------- LOGIN EXTENDED ----------------
+    govOfSriLanka: "Government of Sri Lanka",
+    departmentOfMotorTraffic: "Department of Motor Traffic",
+    secureLogin: "Secure Login",
+    loginIllustrationAlt: "Official service illustration",
+    loginPanelLine1: "Official portal for drivers, officers, and administrators.",
+    loginPanelLine2: "Use your NIC / Officer ID to access your dashboard.",
+    loginPanelLine3: "Authorized access only. Activity may be recorded for compliance.",
+    loginDemoHint: "Police: POL999, Driver: 901234567V, Admin: ADM999",
+    errInvalidId: "Invalid NIC / Officer ID / Admin ID",
+
+    // ---------------- DRIVER DASHBOARD ----------------
+    paymentsDashboardTitle: "Payments Dashboard",
+    paymentsDashboardSub:
+      "Review outstanding violations, settle payments, and keep records up to date.",
+    unpaidFinesTitle: "Unpaid Fines",
+    unpaidFinesSub:
+      "Pay pending fines securely and generate a confirmation receipt instantly.",
+    pendingFines: "Pending Fines",
+    totalDue: "Total Due",
+    accountStatus: "Account Status",
+    actionRequired: "Action Required",
+    noPendingViolations: "No Pending Violations",
+    pendingViolations: "Pending Violations",
+    noPendingFines: "No pending fines",
+    upToDateDriveSafely: "You are fully up to date. Keep driving safely.",
+    fineLabel: "Fine",
+    nicShort: "NIC",
+    notCaptured: "Not captured",
+    vehicleLabel: "Vehicle",
+    notSpecified: "Not specified",
+    reference: "Reference",
+    payMyFine: "Pay my fine",
+
+    // ---------------- PAYMENT MODAL ----------------
+    paymentSuccessfulTitle: "Payment Successful",
+    paymentConfirmed: "Payment Confirmed",
+    receiptGeneratedForFine: "Receipt generated for fine",
+    downloadOfficialPdf: "Download Official PDF Receipt",
+    officialPdfDownloaded: "Official PDF receipt downloaded.",
+    officialPdfDownloadFailed:
+      "If the PDF did not download, use the button below.",
+    payFine: "Pay Fine",
+    officialFineDetails: "Official fine details",
+    card: "Card",
+    qr: "QR",
+    totalAmount: "Total Amount",
+    errEnterOtp: "Enter the OTP code.",
+    errInvalidOtp: "Invalid OTP code. Please try again.",
+    securityVerification: "Security verification",
+    otpSentNotice:
+      "We sent a one-time password (OTP) to your registered contact.",
+    demoOtp: "Demo OTP",
+    otpCode: "OTP Code",
+    otpPlaceholder: "6-digit code",
+    resendOtp: "Resend OTP",
+    confirmAndPay: "Confirm & Pay",
+    cardNumber: "Card Number",
+    expiry: "Expiry",
+    cvc: "CVC",
+    continue: "Continue",
+    qrPayAlt: "QR code to pay fine",
+    scanQrPrompt:
+      "Scan this code with your banking app to confirm payment securely.",
+    verifying: "Verifying...",
+
+    // ---------------- COMPLAINTS ----------------
+    complaintFormSub:
+      "Provide accurate information so administrators can review quickly.",
+    fineIdPlaceholder: "e.g. f101",
+    reasonUnfairFine: "Unfair Fine",
+    reasonOfficerMisconduct: "Officer Misconduct",
+    reasonSystemError: "System Error",
+    reasonOther: "Other",
+    complaintDescriptionPlaceholder: "Describe your complaint...",
+    attachEvidenceDemo: "Attach Evidence (Image/PDF) - Demo",
+    complaintListSub:
+      "Track progress and final decisions on each submitted complaint.",
+    noComplaintsYet: "No complaints submitted yet.",
+    submittedOn: "Submitted on",
+    rejected: "Rejected",
+    noAdditionalDescription: "No additional description provided.",
+    complaintsPageSub:
+      "Submit appeal requests with evidence and monitor each complaint lifecycle status.",
+
+    // ---------------- HISTORY ----------------
+    historyPageSub:
+      "View all issued fines, payment status, and location details in one audit-ready table.",
+    historyEmpty: "No fine history found for this account.",
+    paidOn: "Paid on",
+
+    // ---------------- ADMIN ----------------
+    adminDashboardSub:
+      "Review complaint queues, apply final decisions, and keep the full event trail ready for compliance checks.",
+    complaintsQueue: "Complaints Queue",
+    noPendingComplaints: "No pending complaints to review.",
+    viewAttachmentDemo: "View Attachment (Demo)",
+    systemAuditLog: "System Audit Log",
+    systemAuditLogSub:
+      "Chronological trail of payments, complaint updates, and enforcement actions.",
+    noAuditEvents: "No events logged yet.",
+    auditActionFineIssued: "Fine Issued",
+    auditActionPayment: "Payment",
+    auditActionComplaintSubmit: "Complaint Submitted",
+    auditActionComplaintUpdate: "Complaint Updated",
+
+    // ---------------- POLICE DASHBOARD ----------------
+    trafficControlUnit: "Traffic Control Unit",
+    policeDashboardSub:
+      "Manage enforcement records, issue violation sheets, and verify field-side payment status.",
+    totalFines: "Total Fines",
+    recentIssuedFines: "Recent Issued Fines",
+    recentIssuedFinesSub:
+      "Monitor latest fine activity and payment outcomes.",
+    noFinesAvailable: "No fines available.",
+    vehicleNotSet: "Vehicle not set",
+
+    // ---------------- ISSUE FINE FORM ----------------
+    newTrafficViolationEntry: "New Traffic Violation Entry",
+    issueFineFormSub:
+      "Complete all fields and submit to generate a new fine record.",
+    officerForm: "Officer Form",
+    fineIssuedSuccess: "Fine sheet issued successfully.",
+    fineLinkedToDriverNic: "Fine linked to driver NIC {nic}.",
+    driverNicLicense: "Driver NIC / License",
+    driverNicPlaceholder: "e.g. 901234567V",
+    offenderName: "Offender Name",
+    fullName: "Full Name",
+    addressOptional: "Address (Optional)",
+    driverAddressPlaceholder: "Driver address",
+    vehicleNumber: "Vehicle Number",
+    vehiclePlaceholder: "WP CAA-1234",
+    locationPlaceholder: "City / street",
+    locationPoliceStationPlaceholder:
+      "Type and select a Sri Lanka police station",
+    locationPoliceStationHint:
+      "{count} Sri Lanka police stations loaded. Start typing to filter.",
+    noPoliceStationMatch: "No matching police station found.",
+    violationType: "Violation Type",
+    totalFineAmount: "Total Fine Amount",
+    processing: "Processing...",
+    issueFineSheet: "Issue Fine Sheet",
+    errInvalidNic: "Enter a valid NIC (9 digits + V/X or 12 digits).",
+    errVehicleRequired: "Vehicle number is required.",
+    errLocationRequired: "Location is required.",
+    errSelectValidPoliceStation:
+      "Please select a valid Sri Lanka police station from the list.",
+    errOffenderRequired: "Offender name is required.",
+    unspecifiedViolation: "Unspecified Violation",
+
+    // ---------------- ROLE HOME SHELL ----------------
+    officialService: "Official Service",
+    check: "Check",
+    searchByNicVehicleFine:
+      "You can search by NIC, vehicle number, or fine reference.",
+    howItWorks: "How It Works",
+    howItWorksSub: "Three simple steps to complete your task.",
+    illustrationPlaceholder: "Illustration Placeholder",
+    helpAndSupport: "Help and Support",
+    helpAndSupportDesc:
+      "Use the complaints section if details are incorrect. Keep your payment receipt for reference.",
+    emergency: "Emergency",
+    emergencyDesc: "Instant access to Police and Ambulance services.",
+    footerSecureOps: "E-Traffic Services. Secure Digital Operations.",
+
+    // ---------------- DRIVER HOME ----------------
+    driverPortalBadge: "Driver Digital Portal",
+    driverHomeHeroTitle1: "Traffic Fines",
+    driverHomeHeroTitle2: "Handled In Minutes",
+    driverHomeHeroSub:
+      "Check violations, complete payments, and track disputes from one secure dashboard built for fast everyday use.",
+    driverSearchLabel: "Search fines",
+    driverSearchPlaceholder:
+      "Vehicle number / NIC / Fine reference (e.g., WP CAA-1234)",
+    findFine: "Find Fine",
+    currentBalance: "Current Balance",
+    security: "Security",
+    encryptedTransactions: "Encrypted transactions and verified receipts",
+    driverActionPayTitle: "Pay Fines",
+    driverActionPayDesc:
+      "Clear unpaid fines with secure card or QR payment.",
+    driverActionDisputesTitle: "Disputes",
+    driverActionDisputesDesc:
+      "Submit appeals and track responses from administrators.",
+    driverActionHelpTitle: "Help Center",
+    driverActionHelpDesc:
+      "Get support details and emergency contact access.",
+    driverStatProcessed: "Fines Processed",
+    driverStatRegistered: "Registered Drivers",
+    driverStatAvailability: "Service Availability",
+    driverStatTraceability: "Receipt Traceability",
+    driverStepsTitle: "How Driver Flow Works",
+    driverStepsSub: "Use this three-step sequence for fast compliance.",
+    driverStep1Title: "Search",
+    driverStep1Desc:
+      "Use NIC, vehicle number, or fine reference to pull exact records.",
+    driverStep2Title: "Review and Pay",
+    driverStep2Desc:
+      "Confirm violation details and pay through supported channels.",
+    driverStep3Title: "Store Receipt",
+    driverStep3Desc:
+      "Get instant confirmation and preserve proof for future checks.",
+
+    // ---------------- POLICE HOME ----------------
+    policePortalBadge: "Police Operations Portal",
+    policeHomeHeroTitle1: "Officer Console",
+    policeHomeHeroTitle2: "Fast, Accurate, Auditable",
+    policeHomeHeroSub:
+      "Issue violations, verify payments, and review enforcement activity through a secure role-based workflow.",
+    policeSearchLabel: "Search fines and drivers",
+    policeSearchPlaceholder:
+      "Driver NIC / license number / fine reference",
+    searchRecords: "Search Records",
+    liveStatus: "Live Status",
+    auditLoggingEnabled:
+      "Audit logging enabled for all officer actions",
+    avgSearch: "Avg Search",
+    syncHealth: "Sync Health",
+    policeActionIssueTitle: "Issue Fine",
+    policeActionIssueDesc:
+      "Create and submit a fine sheet in one guided form.",
+    policeActionIssuedTitle: "Issued Fines",
+    policeActionIssuedDesc:
+      "Review recently issued fines and payment updates.",
+    policeActionVerifyTitle: "Verify Payment",
+    policeActionVerifyDesc:
+      "Confirm receipt status during roadside checks.",
+    policeStatAccess: "Officer Access",
+    policeStatAvailability: "Availability",
+    policeStatQuery: "Average Query Time",
+    policeStatAudit: "Audit Coverage",
+    policeStepsTitle: "Officer Workflow",
+    policeStepsSub: "Three steps to complete field actions safely.",
+    policeStep1Title: "Find Record",
+    policeStep1Desc:
+      "Search by NIC, license, or fine reference before issuing actions.",
+    policeStep2Title: "Issue or Verify",
+    policeStep2Desc:
+      "Create a fine sheet or validate paid status against receipt data.",
+    policeStep3Title: "Complete Audit Trail",
+    policeStep3Desc:
+      "Every transaction is logged with timestamp and officer metadata.",
+    policeHq: "Police HQ",
+    trafficHotline: "Traffic Hotline",
+
+    // ---------------- NOTIFICATION TEMPLATES ----------------
+    notifFineIssued: "New traffic fine {fineId} issued for NIC {nic}",
+    notifPaymentSuccessful: "Fine Payment Successful. Receipt #{receiptNo}",
+    notifComplaintSubmitted:
+      "Complaint Submitted Successfully. Reference #{complaintId}",
+    notifComplaintStatusUpdated:
+      "Complaint #{complaintId} marked as {status}",
+    notifWelcome: "Welcome to E-Traffic Fine System",
+
+    // ---------------- AUDIT DETAILS TEMPLATES ----------------
+    logFineIssued: "Fine #{fineId} issued to NIC {nic}",
+    logPayment: "Fine #{fineId} paid. Receipt #{receiptNo}",
+    logComplaintSubmitted: "Complaint #{complaintId} submitted",
+    logComplaintUpdated: "Complaint #{complaintId} {status}"
   },
 
   // ================= SINHALA =================

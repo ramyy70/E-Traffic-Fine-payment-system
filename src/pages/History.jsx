@@ -3,19 +3,20 @@ import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LangContext';
 import { Calendar, MapPin, DollarSign } from 'lucide-react';
+import { fineBelongsToDriver } from '../utils/identity';
 
 const History = () => {
     const { fines } = useData();
     const { user } = useAuth();
     const { t } = useLang();
 
-    const userFines = fines.filter((fine) => fine.userId === user.id);
+    const userFines = fines.filter((fine) => fineBelongsToDriver(fine, user));
 
     return (
         <div className="page-container">
             <section className="page-header">
                 <h1 className="page-title">{t('history')}</h1>
-                <p className="page-subtitle">View all issued fines, payment status, and location details in one audit-ready table.</p>
+                <p className="page-subtitle">{t('historyPageSub')}</p>
             </section>
 
             <div className="table-shell">
@@ -27,14 +28,14 @@ const History = () => {
                                 <th>{t('violation')}</th>
                                 <th>{t('status')}</th>
                                 <th>{t('amount')}</th>
-                                <th>Details</th>
+                                <th>{t('details')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 bg-white">
                             {userFines.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="px-5 py-10 text-center text-sm text-slate-500">
-                                        No fine history found for this account.
+                                        {t('historyEmpty')}
                                     </td>
                                 </tr>
                             ) : (
@@ -61,7 +62,7 @@ const History = () => {
                                                 {fine.paidDate && (
                                                     <div className="flex items-center gap-1 text-xs text-emerald-700">
                                                         <DollarSign className="h-3.5 w-3.5" />
-                                                        Paid on {fine.paidDate}
+                                                        {t('paidOn')} {fine.paidDate}
                                                     </div>
                                                 )}
                                             </div>
