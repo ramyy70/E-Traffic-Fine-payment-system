@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ClipboardList, FilePlus2, ShieldCheck } from 'lucide-react';
+import { ClipboardList, FilePlus2, ScanSearch, ShieldCheck } from 'lucide-react';
 import RoleHomeShell from '../components/home/RoleHomeShell';
 import { useLang } from '../context/LangContext';
 
@@ -51,6 +51,12 @@ export default function PoliceHome({ go }) {
                     icon: ClipboardList,
                     title: t('policeActionIssuedTitle'),
                     desc: t('policeActionIssuedDesc'),
+                    onClick: () => go('policeDashboard'),
+                },
+                {
+                    icon: ScanSearch,
+                    title: t('policeActionVerifyTitle'),
+                    desc: t('policeActionVerifyDesc'),
                     onClick: () => go('policeDashboard'),
                 },
             ]}

@@ -2,7 +2,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { supabase, driverHelpers, policeHelpers, adminHelpers, auditHelpers } from '../lib/supabase';
 import { useAuth } from './AuthContext';
-import { driverUserIdFromNic, normalizeNic } from '../utils/identity';
+import { normalizeNic } from '../utils/identity';
 
 const DataContext = createContext();
 
@@ -100,8 +100,6 @@ export const DataProvider = ({ children }) => {
             if (dData) driverId = dData.id;
         }
 
-        const fineNumber = `FINE-${Date.now()}`;
-        
         const finePayload = {
             driver_id: driverId,
             vehicle_id: null,
