@@ -1,0 +1,22 @@
+{
+  "name": "fine-payment-backend",
+  "version": "1.0.0",
+  "description": "Backend for Fine Payment & Management System",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "cd nodejs-api && npm start",
+    "dev": "cd nodejs-api && npm run dev"
+  },
+  "keywords": ["node", "express", "supabase", "traffic-fine"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

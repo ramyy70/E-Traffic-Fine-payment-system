@@ -1,0 +1,4 @@
+-- Initial Admin user (Assuming you use default auth or mock data)
+-- Let's mock a UUID for now in a real seed since we don't know the generated auth UUIDs
+-- INSERT INTO users (id, email, password_hash, full_name, phone_number, role, station_name)
+-- VALUES ('550e8400-e29b-41d4-a716-446655440000', 'admin@etraffic.com', 'hashedpassword', 'System Admin', '0112345678', 'admin', 'Headquarters');
