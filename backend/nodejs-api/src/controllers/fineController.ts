@@ -2,6 +2,25 @@ import { Request, Response } from 'express';
 import { supabase } from '../config/supabaseClient';
 import QRCode from 'qrcode';
 
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
+const PAYPAL_SECRET = process.env.PAYPAL_SECRET;
+const PAYPAL_API_BASE = 'https://api-m.sandbox.paypal.com';
+
+const getPayPalAccessToken = async () => {
+  const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`).toString('base64');
+  const response = await fetch(`${PAYPAL_API_BASE}/v1/oauth2/token`, {
+    method: 'POST',
+    body: 'grant_type=client_credentials',
+    headers: {
+      Authorization: `Basic ${auth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
+  const data = await response.json();
+  return data.access_token;
+};
+
+
 export const issueFine = async (req: Request, res: Response) => {
   try {
     const { driver_nic, policeman_number, rank, ...defaultData } = req.body;
@@ -256,7 +275,7 @@ export const getAllFines = async (req: Request, res: Response) => {
   try {
     const { data: fines, error } = await supabase
       .from('fines')
-      .select('*, driver:users!driver_id(nic)')
+      .select('*, driver:drivers(nic)')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -303,6 +322,116 @@ export const getAdminStats = async (req: Request, res: Response) => {
         recentPayments: payments || []
       }
     });
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+export const createPayPalOrder = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    
+    // Fetch fine to check status and amount
+    const { data: fine, error: fetchError } = await supabase
+      .from('fines')
+      .select('status, fine_amount')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !fine) {
+      return res.status(404).json({ error: 'Fine not found' });
+    }
+
+    if (fine.status === 'paid') {
+      return res.status(400).json({ error: 'Fine is already paid' });
+    }
+
+    const accessToken = await getPayPalAccessToken();
+    const response = await fetch(`${PAYPAL_API_BASE}/v2/checkout/orders`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        intent: 'CAPTURE',
+        purchase_units: [
+          {
+            amount: {
+              currency_code: 'USD',
+              value: fine.fine_amount.toString(),
+            },
+            description: `Payment for fine ${id}`
+          },
+        ],
+      }),
+    });
+    
+    const data = await response.json();
+    if (data.id) {
+      return res.status(200).json({ id: data.id });
+    } else {
+      return res.status(400).json({ error: 'Failed to create PayPal order', details: data });
+    }
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+export const capturePayPalOrder = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { orderID } = req.body;
+
+    const accessToken = await getPayPalAccessToken();
+    const response = await fetch(`${PAYPAL_API_BASE}/v2/checkout/orders/${orderID}/capture`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    
+    const data = await response.json();
+    
+    if (data.status === 'COMPLETED') {
+      const { data: fine, error: fetchError } = await supabase
+        .from('fines')
+        .select('status, fine_amount, driver_id, policeman_id')
+        .eq('id', id)
+        .single();
+
+      if (!fetchError && fine && fine.status !== 'paid') {
+        await supabase
+          .from('fines')
+          .update({ status: 'paid' })
+          .eq('id', id);
+
+        await supabase
+          .from('payments')
+          .insert({
+            fine_id: id,
+            driver_id: fine.driver_id,
+            amount: fine.fine_amount,
+            payment_method: 'paypal',
+            transaction_reference: data.id
+          });
+          
+        if (fine.policeman_id && fine.driver_id) {
+          await supabase
+            .from('messages')
+            .insert({
+              sender_id: fine.driver_id,
+              receiver_id: fine.policeman_id,
+              content: `Payment cleared via PayPal: Fine ID ${id.split('-')[0].toUpperCase()} for Rs. ${fine.fine_amount} has been successfully paid by the driver.`
+            });
+        }
+      }
+
+      return res.status(200).json({ message: 'Payment successful', data });
+    } else {
+      return res.status(400).json({ error: 'Payment capture failed', details: data });
+    }
   } catch (error: any) {
     return res.status(500).json({ error: error.message });
   }

@@ -16,11 +16,13 @@ import authRoutes from './routes/authRoutes';
 import fineRoutes from './routes/fineRoutes';
 import userRoutes from './routes/userRoutes';
 import messageRoutes from './routes/messageRoutes';
+import statsRoutes from './routes/statsRoutes';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/fines', fineRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/stats', statsRoutes);
 
 // Catch-all 404 for API routes
 app.use((req: Request, res: Response) => {

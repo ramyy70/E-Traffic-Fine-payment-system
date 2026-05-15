@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../../components/common/Navbar';
+import { useTranslation } from 'react-i18next';
 import { User, Mail, Phone, MapPin, Loader2, ShieldCheck, BadgeInfo, CheckCircle } from 'lucide-react';
 
 const ProfilePage = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
@@ -69,7 +71,7 @@ const ProfilePage = () => {
       const updatedUser = { ...userObj, full_name: formData.full_name, phone_number: formData.phone_number, station_name: formData.station_name };
       localStorage.setItem('user', JSON.stringify(updatedUser));
       
-      setSuccess('Profile updated securely!');
+      setSuccess(t('profile.updatedSuccess'));
       setTimeout(() => setSuccess(''), 3000);
     } catch (err: any) {
       setErrorMsg(err.message);
@@ -90,7 +92,7 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <Navbar />
       <div className="flex-1 mt-24 px-4 w-full max-w-3xl mx-auto mb-10">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">My Profile</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">{t('profile.title')}</h1>
 
         <div className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm relative">
           <div className="h-32 bg-maroon relative overflow-hidden">
@@ -106,7 +108,7 @@ const ProfilePage = () => {
               </div>
               <div className="mb-2 bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 border border-blue-100">
                 <ShieldCheck className="w-4 h-4" />
-                {formData.role.toUpperCase()}
+                {t(`auth.${formData.role}`).toUpperCase()}
               </div>
             </div>
 
@@ -125,7 +127,7 @@ const ProfilePage = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">{t('profile.fullName')}</label>
                   <div className="relative">
                     <User className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input 
@@ -139,7 +141,7 @@ const ProfilePage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">{t('profile.phoneNumber')}</label>
                   <div className="relative">
                     <Phone className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input 
@@ -153,7 +155,7 @@ const ProfilePage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Email Address (Read-Only)</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">{t('profile.emailReadOnly')}</label>
                   <div className="relative">
                     <Mail className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input 
@@ -167,7 +169,7 @@ const ProfilePage = () => {
 
                 {formData.role === 'driver' && (
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2">NIC Number (Read-Only)</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">{t('profile.nicReadOnly')}</label>
                     <div className="relative">
                       <BadgeInfo className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                       <input 
@@ -183,7 +185,7 @@ const ProfilePage = () => {
                 {formData.role === 'policeman' && (
                   <>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Badge Number (Read-Only)</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">{t('profile.badgeReadOnly')}</label>
                       <div className="relative">
                         <BadgeInfo className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input 
@@ -195,7 +197,7 @@ const ProfilePage = () => {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2">Station Name</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2">{t('profile.stationName')}</label>
                       <div className="relative">
                         <MapPin className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input 
@@ -217,7 +219,7 @@ const ProfilePage = () => {
                   disabled={submitting}
                   className="px-8 py-3 bg-maroon text-white font-bold rounded-xl hover:bg-maroon-dark transition-colors shadow-md flex items-center justify-center min-w-[160px]"
                 >
-                  {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save Changes'}
+                  {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : t('profile.saveChanges')}
                 </button>
               </div>
             </form>

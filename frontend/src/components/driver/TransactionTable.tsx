@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface PaymentTransaction {
   id: string;
@@ -14,6 +15,7 @@ export interface PaymentTransaction {
 }
 
 const TransactionTable = ({ driverId }: { driverId?: string }) => {
+  const { t } = useTranslation();
   const [transactions, setTransactions] = useState<PaymentTransaction[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,7 +38,7 @@ const TransactionTable = ({ driverId }: { driverId?: string }) => {
   }, [driverId]);
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-500">Loading history...</div>;
+    return <div className="p-8 text-center text-gray-500">{t('dashboard.loadingHistory')}</div>;
   }
 
   return (
@@ -45,12 +47,12 @@ const TransactionTable = ({ driverId }: { driverId?: string }) => {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-100">
-              <th className="px-6 py-4 font-bold">Transaction Ref</th>
-              <th className="px-6 py-4 font-bold">Fine ID</th>
-              <th className="px-6 py-4 font-bold">Offence</th>
-              <th className="px-6 py-4 font-bold">Date</th>
-              <th className="px-6 py-4 font-bold">Amount</th>
-              <th className="px-6 py-4 font-bold">Status</th>
+              <th className="px-6 py-4 font-bold">{t('dashboard.transactionRef')}</th>
+              <th className="px-6 py-4 font-bold">{t('dashboard.fineId')}</th>
+              <th className="px-6 py-4 font-bold">{t('dashboard.offence')}</th>
+              <th className="px-6 py-4 font-bold">{t('dashboard.date')}</th>
+              <th className="px-6 py-4 font-bold">{t('dashboard.fineAmount')}</th>
+              <th className="px-6 py-4 font-bold">{t('dashboard.status')}</th>
             </tr>
           </thead>
           <tbody className="text-gray-700">
@@ -60,12 +62,12 @@ const TransactionTable = ({ driverId }: { driverId?: string }) => {
                 <tr key={idx} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
                   <td className="px-6 py-4 font-medium text-xs font-mono">{tx.transaction_reference}</td>
                   <td className="px-6 py-4 text-maroon font-bold font-mono">{fineCode}</td>
-                  <td className="px-6 py-4 text-sm">{tx.fines?.nature_of_offence || 'General Offence'}</td>
+                  <td className="px-6 py-4 text-sm">{tx.fines?.nature_of_offence || t('dashboard.generalOffence')}</td>
                   <td className="px-6 py-4 text-sm">{new Date(tx.paid_at).toLocaleDateString()}</td>
-                  <td className="px-6 py-4 font-bold">Rs. {Number(tx.amount).toFixed(2)}</td>
+                  <td className="px-6 py-4 font-bold">{t('common.currency')} {Number(tx.amount).toFixed(2)}</td>
                   <td className="px-6 py-4">
                     <span className="px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700">
-                      Paid
+                      {t('dashboard.paid')}
                     </span>
                   </td>
                 </tr>
@@ -76,7 +78,7 @@ const TransactionTable = ({ driverId }: { driverId?: string }) => {
       </div>
       {transactions.length === 0 && (
         <div className="p-8 text-center text-gray-500">
-          No payment transactions found.
+          {t('dashboard.noTransactions')}
         </div>
       )}
     </div>

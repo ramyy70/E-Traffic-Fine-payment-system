@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { User, Shield, Key, Loader2, ArrowRight } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { POLICE_STATIONS } from '../../utils/stationDirectory';
 
 type Role = 'driver' | 'policeman' | 'admin';
@@ -9,6 +10,7 @@ const RegisterForm = () => {
   const [role, setRole] = useState<Role>('policeman');
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -164,7 +166,7 @@ const RegisterForm = () => {
     e.preventDefault();
     setError('');
     if (formData.password !== formData.confirm_password) {
-      return setError('Passwords do not match');
+      return setError(t('auth.passwordMismatch') || 'Passwords do not match');
     }
     setStep(2);
   };
@@ -232,8 +234,8 @@ const RegisterForm = () => {
           <div className="flex items-center justify-center mb-6">
              <img src="/src/assets/logo.png" alt="Lanka FinePayments Logo" className="w-20 h-20 object-contain drop-shadow-lg" />
           </div>
-          <h2 className="text-3xl font-extrabold text-[#111928] mb-1 tracking-tight">Personal Details</h2>
-          <p className="text-gray-500 text-sm mb-6 font-medium">Step 1 of 2 • Configure your basic credentials</p>
+          <h2 className="text-3xl font-extrabold text-[#111928] mb-1 tracking-tight">{t('auth.personalDetails')}</h2>
+          <p className="text-gray-500 text-sm mb-6 font-medium">{t('auth.stepDesc1')}</p>
           
           {/* Progress Bar */}
           <div className="flex gap-2 mb-10 w-3/4">
@@ -241,13 +243,13 @@ const RegisterForm = () => {
             <div className="h-1 flex-1 bg-gray-100 rounded-full"></div>
           </div>
           
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Select Account Type</p>
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">{t('auth.selectAccountType')}</p>
           
           <div className="grid grid-cols-3 gap-4 mb-8">
             {[
-              { id: 'policeman', icon: <Shield className="w-6 h-6" />, label: 'Police' },
-              { id: 'driver', icon: <User className="w-6 h-6" />, label: 'Driver' },
-              { id: 'admin', icon: <Key className="w-6 h-6" />, label: 'Admin' }
+              { id: 'policeman', icon: <Shield className="w-6 h-6" />, label: t('auth.police') },
+              { id: 'driver', icon: <User className="w-6 h-6" />, label: t('auth.driver') },
+              { id: 'admin', icon: <Key className="w-6 h-6" />, label: t('auth.admin') }
             ].map((r) => (
               <button
                 key={r.id}
@@ -274,7 +276,7 @@ const RegisterForm = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className={labelClass}>Full Name</label>
+                <label className={labelClass}>{t('auth.fullName')}</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <User className="w-4 h-4 text-gray-400" />
@@ -283,23 +285,23 @@ const RegisterForm = () => {
                 </div>
               </div>
               <div>
-                <label className={labelClass}>Phone</label>
+                <label className={labelClass}>{t('auth.phone')}</label>
                 <input type="tel" name="phone_number" value={formData.phone_number} onChange={handleChange} required placeholder="+94 77 123 4567" className={inputClass} />
               </div>
             </div>
 
             <div>
-              <label className={labelClass}>Email Address</label>
+              <label className={labelClass}>{t('auth.email')}</label>
               <input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="jane@example.com" className={inputClass} />
             </div>
 
             <div>
-              <label className={labelClass}>Create Password</label>
+              <label className={labelClass}>{t('auth.createPassword')}</label>
               <input type="password" name="password" value={formData.password} onChange={handleChange} required placeholder="Min. 8 characters" className={inputClass} minLength={8} />
             </div>
 
             <div>
-              <label className={labelClass}>Confirm Password</label>
+              <label className={labelClass}>{t('auth.confirmPassword')}</label>
               <input type="password" name="confirm_password" value={formData.confirm_password} onChange={handleChange} required placeholder="Repeat password" className={inputClass} minLength={8} />
             </div>
 
@@ -307,13 +309,13 @@ const RegisterForm = () => {
               type="submit"
               className="w-full flex justify-center items-center gap-2 py-4 px-4 rounded-xl shadow-sm shadow-maroon/20 text-sm font-bold text-white bg-[#8B1A2F] hover:bg-maroon-dark focus:outline-none transition-all transform hover:-translate-y-0.5 mt-4"
             >
-              Continue to Next Step <ArrowRight className="w-4 h-4" />
+              {t('auth.continueToNextStep')} <ArrowRight className="w-4 h-4" />
             </button>
             
             <p className="mt-6 text-center text-gray-500 text-sm font-medium">
-              Already have an account?{' '}
+              {t('auth.alreadyHaveAccount')}{' '}
               <Link to="/login" className="text-orange-600 hover:text-orange-700 font-bold hover:underline transition-all">
-                Sign in securely
+                {t('auth.signInSecurely')}
               </Link>
             </p>
           </form>
@@ -323,11 +325,11 @@ const RegisterForm = () => {
       {step === 2 && (
         <div className="animate-in fade-in slide-in-from-right-8 duration-500">
           <h2 className="text-3xl font-extrabold text-[#111928] mb-1 tracking-tight">
-            {role === 'driver' && 'Driver Verification'}
-            {role === 'policeman' && 'Professional Validation'}
-            {role === 'admin' && 'System Authorization'}
+            {role === 'driver' && t('auth.driverVerification')}
+            {role === 'policeman' && t('auth.professionalValidation')}
+            {role === 'admin' && t('auth.systemAuthorization')}
           </h2>
-          <p className="text-gray-500 text-sm mb-6 font-medium">Step 2 of 2 • Complete your {role} profile</p>
+          <p className="text-gray-500 text-sm mb-6 font-medium">{t('auth.stepDesc2', { role: t(`auth.${role}`) })}</p>
           
           {/* Progress Bar */}
           <div className="flex gap-2 mb-10 w-3/4">
@@ -346,34 +348,34 @@ const RegisterForm = () => {
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className={labelClass}>National ID (NIC)</label>
+                    <label className={labelClass}>{t('auth.nic')}</label>
                     <input type="text" name="nic" value={formData.nic} onChange={handleChange} required placeholder="199012345678" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Date of Birth</label>
+                    <label className={labelClass}>{t('auth.dob')}</label>
                     <input type="date" name="dob" value={formData.dob} onChange={handleChange} required className={inputClass} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className={labelClass}>License Number</label>
+                    <label className={labelClass}>{t('auth.licenseNumber')}</label>
                     <input type="text" name="license_number" value={formData.license_number} onChange={handleChange} required placeholder="B1234567" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Expiry Date</label>
+                    <label className={labelClass}>{t('auth.expiryDate')}</label>
                     <input type="date" name="expiry_date" value={formData.expiry_date} onChange={handleChange} required className={inputClass} />
                   </div>
                 </div>
 
                 <div>
-                  <label className={labelClass}>Address Line 1</label>
+                  <label className={labelClass}>{t('auth.addressLine1')}</label>
                   <input type="text" name="address_line_1" value={formData.address_line_1} onChange={handleChange} required placeholder="123 Main Street" className={inputClass} />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className={labelClass}>City</label>
+                    <label className={labelClass}>{t('auth.city')}</label>
                     <input 
                       type="text" 
                       name="city" 
@@ -391,7 +393,7 @@ const RegisterForm = () => {
                     </datalist>
                   </div>
                   <div>
-                    <label className={labelClass}>Postal Code</label>
+                    <label className={labelClass}>{t('auth.postalCode')}</label>
                     <input type="text" name="postal_code" value={formData.postal_code} onChange={handleChange} required placeholder="00100" className={inputClass} />
                   </div>
                 </div>
@@ -402,33 +404,35 @@ const RegisterForm = () => {
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className={labelClass}>Badge Number</label>
+                    <label className={labelClass}>{t('auth.badgeNumber')}</label>
                     <input type="text" name="badge_number" value={formData.badge_number} onChange={handleChange} required placeholder="POL-12345" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Rank</label>
+                    <label className={labelClass}>{t('auth.rank')}</label>
                     <select name="rank" value={formData.rank} onChange={handleChange} required className={inputClass}>
-                      <option value="">Select Rank</option>
-                      <option value="Police Constable (PC)">Police Constable (PC)</option>
-                      <option value="Police Sergeant (PS)">Police Sergeant (PS)</option>
-                      <option value="Sub Inspector (SI)">Sub Inspector (SI)</option>
-                      <option value="Inspector of Police (IP)">Inspector of Police (IP)</option>
-                      <option value="Chief Inspector of Police (CI)">Chief Inspector of Police (CI)</option>
-                      <option value="Assistant Superintendent of Police (ASP)">Assistant Superintendent of Police (ASP)</option>
-                      <option value="Superintendent of Police (SP)">Superintendent of Police (SP)</option>
-                      <option value="Senior Superintendent of Police (SSP)">Senior Superintendent of Police (SSP)</option>
-                      <option value="Deputy Inspector General of Police (DIG)">Deputy Inspector General of Police (DIG)</option>
-                      <option value="Senior Deputy Inspector General of Police (SDIG)">Senior Deputy Inspector General of Police (SDIG)</option>
-                      <option value="Inspector General of Police (IGP)">Inspector General of Police (IGP)</option>
+                      <option value="">{t('auth.selectRank')}</option>
+                      <option value="Police Constable (PC)">{t('ranks.pc')}</option>
+                      <option value="Police Sergeant (PS)">{t('ranks.ps')}</option>
+                      <option value="Sub Inspector (SI)">{t('ranks.si')}</option>
+                      <option value="Inspector of Police (IP)">{t('ranks.ip')}</option>
+                      <option value="Chief Inspector of Police (CI)">{t('ranks.ci')}</option>
+                      <option value="Assistant Superintendent of Police (ASP)">{t('ranks.asp')}</option>
+                      <option value="Superintendent of Police (SP)">{t('ranks.sp')}</option>
+                      <option value="Senior Superintendent of Police (SSP)">{t('ranks.ssp')}</option>
+                      <option value="Deputy Inspector General of Police (DIG)">{t('ranks.dig')}</option>
+                      <option value="Senior Deputy Inspector General of Police (SDIG)">{t('ranks.sdig')}</option>
+                      <option value="Inspector General of Police (IGP)">{t('ranks.igp')}</option>
                     </select>
                   </div>
                 </div>
                 <div>
-                  <label className={labelClass}>Assigned Station</label>
+                  <label className={labelClass}>{t('auth.assignedStation')}</label>
                   <select name="assigned_station" value={formData.assigned_station} onChange={handleChange} required className={inputClass}>
-                    <option value="">Select a police station</option>
+                    <option value="">{t('auth.selectStation')}</option>
                     {POLICE_STATIONS.map((station, idx) => (
-                      <option key={idx} value={station}>{station} Police Station</option>
+                      <option key={idx} value={station.id}>
+                        {t(`stations.${station.id}`, { defaultValue: station.name })} {t('auth.policeStationSuffix')}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -438,20 +442,22 @@ const RegisterForm = () => {
             {role === 'admin' && (
               <div className="space-y-4">
                 <div>
-                  <label className={labelClass}>Admin Code</label>
+                  <label className={labelClass}>{t('auth.adminCode')}</label>
                   <input type="text" name="admin_code" value={formData.admin_code} onChange={handleChange} required placeholder="ADM-123" className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>Managing Station</label>
+                  <label className={labelClass}>{t('auth.managingStation')}</label>
                   <select name="station_name" value={formData.station_name} onChange={handleChange} required className={inputClass}>
-                    <option value="">Select a police station</option>
+                    <option value="">{t('auth.selectStation')}</option>
                     {POLICE_STATIONS.map((station, idx) => (
-                      <option key={idx} value={station}>{station}</option>
+                      <option key={idx} value={station.id}>
+                        {t(`stations.${station.id}`, { defaultValue: station.name })}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className={labelClass}>Station Verification Code</label>
+                  <label className={labelClass}>{t('auth.stationVerificationCode')}</label>
                   <input type="text" name="station_verification_code" value={formData.station_verification_code} onChange={handleChange} required placeholder="Verification Code" className={inputClass} />
                 </div>
               </div>
@@ -463,7 +469,7 @@ const RegisterForm = () => {
                 onClick={() => setStep(1)}
                 className="w-1/3 flex justify-center items-center py-4 px-4 rounded-xl font-bold text-gray-700 bg-gray-50 hover:bg-gray-100 transition-colors text-sm"
               >
-                Back
+                {t('auth.back')}
               </button>
               <button
                 type="submit"
@@ -471,14 +477,14 @@ const RegisterForm = () => {
                 className="flex-1 flex justify-center items-center gap-2 py-4 px-4 rounded-xl shadow-sm text-sm font-bold text-white bg-[#8B1A2F] hover:bg-maroon-dark focus:outline-none transition-all disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Shield className="w-4 h-4" />}
-                Complete Registration
+                {t('auth.completeRegistration')}
               </button>
             </div>
             
             <p className="mt-6 text-center text-gray-500 text-sm font-medium">
-              Already have an account?{' '}
+              {t('auth.alreadyHaveAccount')}{' '}
               <Link to="/login" className="text-orange-600 hover:text-orange-700 font-bold hover:underline transition-all">
-                Sign in securely
+                {t('auth.signInSecurely')}
               </Link>
             </p>
           </form>

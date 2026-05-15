@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Navbar from '../../components/common/Navbar';
 import FineIssueForm from '../../components/policeman/FineIssueForm';
+import { useTranslation } from 'react-i18next';
 import { MessageSquare, Loader2, CheckCircle } from 'lucide-react';
 
 const PolicemanDashboard = () => {
@@ -29,11 +30,12 @@ const PolicemanDashboard = () => {
     }
   };
 
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <Navbar />
       <div className="flex-1 mt-24 px-4 w-full max-w-7xl mx-auto mb-10">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Policeman Dashboard</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">{t('policeman.dashboardTitle') || 'Policeman Dashboard'}</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
@@ -41,8 +43,8 @@ const PolicemanDashboard = () => {
           </div>
           <div className="lg:col-span-1">
             <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mb-6">
-              <h2 className="text-xl font-bold text-maroon mb-4">Offence History (Live Linked)</h2>
-              <p className="text-gray-500 text-sm">Fine records automatically attach to Central Database.</p>
+              <h2 className="text-xl font-bold text-maroon mb-4">{t('policeman.historyTitle') || 'Offence History (Live Linked)'}</h2>
+              <p className="text-gray-500 text-sm">{t('policeman.historyDesc') || 'Fine records automatically attach to Central Database.'}</p>
             </div>
 
             <div className="bg-maroon p-6 rounded-3xl shadow-lg relative overflow-hidden text-white">
@@ -50,14 +52,14 @@ const PolicemanDashboard = () => {
               
               <div className="relative z-10 flex flex-col gap-3">
                 <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
-                  <MessageSquare className="w-6 h-6" /> Support & Disputes
+                  <MessageSquare className="w-6 h-6" /> {t('policeman.supportTitle') || 'Support & Disputes'}
                 </h2>
-                <p className="text-white/70 text-sm mb-2">Report technical errors directly to the IT Administrator.</p>
+                <p className="text-white/70 text-sm mb-2">{t('policeman.supportDesc') || 'Report technical errors directly to the IT Administrator.'}</p>
                 
                 <textarea 
                   value={content}
                   onChange={e => setContent(e.target.value)}
-                  placeholder="Describe your issue..."
+                  placeholder={t('policeman.issuePlaceholder') || "Describe your issue..."}
                   className="w-full p-3 bg-white/5 border border-white/20 rounded-xl text-sm text-white placeholder-white/40 focus:outline-none focus:border-skyYellow"
                   rows={4}
                 />
@@ -67,7 +69,7 @@ const PolicemanDashboard = () => {
                   disabled={loading || success} 
                   className="w-full flex justify-center items-center px-4 py-2 mt-2 bg-skyYellow text-maroon-dark font-bold rounded-xl hover:bg-white transition-colors"
                 >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : success ? <CheckCircle className="w-5 h-5" /> : 'Send Issue to Admin'}
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : success ? <CheckCircle className="w-5 h-5" /> : (t('policeman.sendIssue') || 'Send Issue to Admin')}
                 </button>
               </div>
             </div>

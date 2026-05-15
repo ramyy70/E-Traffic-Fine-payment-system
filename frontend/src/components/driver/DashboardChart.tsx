@@ -1,4 +1,5 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 export interface FineDataPoint {
   date: string;
@@ -12,12 +13,15 @@ interface DashboardChartProps {
   subtitle?: string;
 }
 
-const DashboardChart = ({ data, title = "Fine History Over Time", subtitle = "Your localized payment trajectory" }: DashboardChartProps) => {
+const DashboardChart = ({ data, title, subtitle }: DashboardChartProps) => {
+  const { t } = useTranslation();
+  const displayTitle = title || t('dashboard.fineHistoryTitle');
+  const displaySubtitle = subtitle || t('dashboard.fineHistorySubtitle');
   return (
     <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm mt-8">
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-gray-800">{title}</h2>
-        <p className="text-sm text-gray-500">{subtitle}</p>
+        <h2 className="text-xl font-bold text-gray-800">{displayTitle}</h2>
+        <p className="text-sm text-gray-500">{displaySubtitle}</p>
       </div>
       <div className="h-64 w-full">
         {data.length > 0 ? (
@@ -36,13 +40,13 @@ const DashboardChart = ({ data, title = "Fine History Over Time", subtitle = "Yo
                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 itemStyle={{ color: '#750000', fontWeight: 'bold' }}
               />
-              <Area type="monotone" dataKey="count" name="Fines Issued" stroke="#750000" strokeWidth={3} fillOpacity={1} fill="url(#colorCount)" />
+              <Area type="monotone" dataKey="count" name={t('dashboard.finesIssued')} stroke="#750000" strokeWidth={3} fillOpacity={1} fill="url(#colorCount)" />
             </AreaChart>
           </ResponsiveContainer>
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-            <p className="font-medium">No charting data available yet.</p>
-            <p className="text-xs">Once you receive fines, trajectory logic will render here.</p>
+            <p className="font-medium">{t('dashboard.noChartData')}</p>
+            <p className="text-xs">{t('dashboard.noChartDataDesc')}</p>
           </div>
         )}
       </div>

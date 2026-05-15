@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Traffic Fine Payment System - Poster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .poster {
+            width: 1200px;
+            height: 850px;
+            background-color: #fff;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Top Banner */
+        .header {
+            height: 350px;
+            background: linear-gradient(to bottom, rgba(0, 20, 50, 0.85), rgba(0, 40, 100, 0.4)), url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+            color: white;
+            text-align: center;
+            padding-top: 60px;
+            position: relative;
+        }
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 15px rgba(0,0,0,0.6);
+        }
+        .header h1 span {
+            font-weight: 300;
+            color: #e2e8f0;
+        }
+        .header p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+            color: #cbd5e1;
+        }
+
+        /* Middle Section */
+        .content {
+            display: flex;
+            padding: 50px 80px;
+            position: relative;
+            z-index: 10;
+            background: white;
+            margin: -70px 50px 0 50px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        .column {
+            flex: 1;
+            padding: 0 40px;
+        }
+        .column:first-child {
+            border-right: 2px solid #e2e8f0;
+        }
+        .column h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            color: #1e293b;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Mockups */
+        .mockups {
+            display: flex;
+            justify-content: space-around;
+            padding: 0 60px;
+            margin-top: 25px;
+            position: relative;
+            z-index: 10;
+        }
+        .mockup-container {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .mockup-container:hover {
+            transform: translateY(-5px);
+        }
+        .browser-window {
+            width: 480px;
+            height: 300px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .browser-header {
+            background: #f1f5f9;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .dots {
+            display: flex;
+            gap: 6px;
+        }
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+        .browser-content {
+            flex: 1;
+            background: #f8fafc;
+            position: relative;
+        }
+        
+        /* UI Content Styling */
+        .ui-layout-driver {
+            padding: 25px;
+            text-align: left;
+        }
+        .ui-layout-driver .ui-nav {
+            display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #3b82f6; padding-bottom: 15px; margin-bottom: 20px;
+        }
+        .ui-layout-driver .ui-nav-logo { font-weight: 800; color: #1d4ed8; font-size: 1.3rem; }
+        .ui-layout-driver .ui-nav-links { color: #64748b; font-size: 0.9rem; font-weight: 500;}
+        .ui-layout-driver .ui-card { background: white; border-radius: 8px; padding: 18px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-left: 5px solid #ef4444;}
+        
+        .ui-layout-police {
+            padding: 20px;
+            text-align: left;
+            background: #e2e8f0;
+            height: 100%;
+            display: flex;
+        }
+        .ui-layout-police .ui-sidebar { width: 90px; background: #0f172a; border-radius: 8px; margin-right: 20px;}
+        .ui-layout-police .ui-main { flex: 1; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);}
+        .ui-layout-police .ui-form-element { background: #f1f5f9; height: 35px; margin-bottom: 12px; border-radius: 6px; }
+
+        .mockup-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-top: 15px;
+            color: #0f172a;
+        }
+        .mockup-title span {
+            font-weight: 300;
+            font-size: 1.5rem;
+            vertical-align: top;
+            color: #64748b;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding: 25px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        .footer-left h3 {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .tech-logos {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+        .tech-logos span {
+            font-size: 22px; 
+            font-weight: 800; 
+            font-family: 'Montserrat', sans-serif;
+        }
+        .footer-right {
+            text-align: right;
+            font-size: 1rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="poster">
+        <div class="header">
+            <h1>E-TRAFFIC <span>| online</span></h1>
+            <p>seamless fine management for citizens and officers</p>
+        </div>
+
+        <div class="content">
+            <div class="column">
+                <h2>Empowers citizens with a transparent, multilingual pathway to easily view and settle their traffic fines online.</h2>
+            </div>
+            <div class="column">
+                <h2>Equips police officers with intelligent digital tools to efficiently record violations and track fine payments.</h2>
+            </div>
+        </div>
+
+        <div class="mockups">
+            <div class="mockup-container">
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                    </div>
+                    <div class="browser-content">
+                        <div class="ui-layout-driver">
+                            <div class="ui-nav">
+                                <div class="ui-nav-logo">Driver Portal</div>
+                                <div class="ui-nav-links">EN | SI | TA &nbsp;&nbsp;&nbsp; Logout</div>
+                            </div>
+                            <h3 style="color: #334155; margin-bottom: 15px;">Pending Fines</h3>
+                            <div class="ui-card">
+                                <strong style="color: #0f172a; font-size: 1.1rem;">Speeding Violation</strong><br>
+                                <span style="color: #64748b; font-size: 0.9rem; display: inline-block; margin-top: 5px;">Date: 2026-05-13 | Location: Colombo</span><br>
+                                <div style="margin-top: 15px; display: inline-block; padding: 8px 20px; background: #10b981; color: white; border-radius: 6px; font-size: 0.85rem; font-weight: bold;">Pay Fine Online</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mockup-title">Driver<span>Portal</span></div>
+            </div>
+
+            <div class="mockup-container">
+                <div class="browser-window">
+                    <div class="browser-header">
+                        <div class="dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                    </div>
+                    <div class="browser-content">
+                        <div class="ui-layout-police">
+                            <div class="ui-sidebar">
+                                <div style="width: 40px; height: 40px; background: #334155; border-radius: 50%; margin: 20px auto;"></div>
+                                <div style="width: 60px; height: 8px; background: #334155; border-radius: 4px; margin: 15px auto;"></div>
+                                <div style="width: 60px; height: 8px; background: #334155; border-radius: 4px; margin: 15px auto;"></div>
+                            </div>
+                            <div class="ui-main">
+                                <h3 style="color: #334155; margin-bottom: 20px;">Issue New Ticket</h3>
+                                <div class="ui-form-element" style="width: 100%;"></div>
+                                <div class="ui-form-element" style="width: 70%;"></div>
+                                <div class="ui-form-element" style="width: 100%; height: 70px;"></div>
+                                <div style="margin-top: 10px; display: inline-block; padding: 8px 25px; background: #3b82f6; color: white; border-radius: 6px; font-size: 0.85rem; font-weight: bold;">Submit Fine</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mockup-title">Officer<span>Portal</span></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-left">
+                <h3>Powered by</h3>
+                <div class="tech-logos">
+                    <!-- React text -->
+                    <span style="color: #61DBFB;">React</span>
+                    <!-- Node text -->
+                    <span style="color: #68A063;">Node.js</span>
+                    <!-- TypeScript text -->
+                    <span style="color: #3178C6;">TypeScript</span>
+                    <!-- MongoDB text -->
+                    <span style="color: #4DB33D;">MongoDB</span>
+                </div>
+            </div>
+            <div class="footer-right">
+                E-Traffic Fine Payment System | Designed for Modern Governance
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, LogIn, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -8,6 +9,7 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,8 +49,8 @@ const LoginForm = () => {
         <div className="flex items-center justify-center mb-6">
            <img src="/src/assets/logo.png" alt="Lanka FinePayments Logo" className="w-24 h-24 object-contain drop-shadow-xl" />
         </div>
-        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome Back</h2>
-        <p className="text-gray-500 mt-2 font-medium">Login to Lanka FinePayments</p>
+        <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">{t('auth.loginTitle')}</h2>
+        <p className="text-gray-500 mt-2 font-medium">{t('auth.loginSubtitle')}</p>
       </div>
 
       {error && (
@@ -59,7 +61,7 @@ const LoginForm = () => {
 
       <form onSubmit={handleLogin} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('auth.email')}</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Mail className="h-5 w-5 text-gray-400" />
@@ -69,14 +71,14 @@ const LoginForm = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl focus:ring-maroon focus:border-maroon transition-colors bg-white/50 backdrop-blur-sm"
-              placeholder="Enter your email"
+              placeholder={t('auth.emailPlaceholder')}
               required
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">{t('auth.password')}</label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Lock className="h-5 w-5 text-gray-400" />
@@ -95,9 +97,9 @@ const LoginForm = () => {
         <div className="flex items-center justify-between text-sm">
           <label className="flex items-center">
             <input type="checkbox" className="rounded border-gray-300 text-maroon focus:ring-maroon mr-2" />
-            Remember me
+            {t('auth.rememberMe')}
           </label>
-          <a href="#" className="text-maroon hover:text-maroon-dark font-medium">Forgot password?</a>
+          <a href="#" className="text-maroon hover:text-maroon-dark font-medium">{t('auth.forgotPassword')}</a>
         </div>
 
         <button
@@ -105,7 +107,7 @@ const LoginForm = () => {
           disabled={isLoading}
           className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-maroon hover:bg-maroon-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-maroon transition-all transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
+          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : t('auth.signIn')}
         </button>
       </form>
     </div>

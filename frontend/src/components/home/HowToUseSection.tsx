@@ -1,20 +1,23 @@
 import { Smartphone, BellRing, CreditCard, FileCheck2 } from 'lucide-react';
-
-const steps = [
-  { icon: <Smartphone className="w-8 h-8" />, title: "Record Offence", desc: "Officer enters details via secure mobile portal." },
-  { icon: <BellRing className="w-8 h-8" />, title: "Real-time Alert", desc: "Driver instantly receives SMS & app notification." },
-  { icon: <CreditCard className="w-8 h-8" />, title: "Settle Fine", desc: "Securely pay online via card or designated banks." },
-  { icon: <FileCheck2 className="w-8 h-8" />, title: "Record Cleared", desc: "Digital driving profile is updated automatically." }
-];
+import { useTranslation } from 'react-i18next';
 
 const HowToUseSection = () => {
+  const { t } = useTranslation();
+
+  const steps = [
+    { icon: <Smartphone className="w-8 h-8" />, title: t('howToUse.step1.title'), desc: t('howToUse.step1.desc') },
+    { icon: <BellRing className="w-8 h-8" />, title: t('howToUse.step2.title'), desc: t('howToUse.step2.desc') },
+    { icon: <CreditCard className="w-8 h-8" />, title: t('howToUse.step3.title'), desc: t('howToUse.step3.desc') },
+    { icon: <FileCheck2 className="w-8 h-8" />, title: t('howToUse.step4.title'), desc: t('howToUse.step4.desc') }
+  ];
+
   return (
     <section id="how-to-use" className="py-24 bg-gray-50 border-t border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-[#8B1A2F] font-bold tracking-wider uppercase text-sm mb-3 block">Operational Workflow</span>
-          <h2 className="text-4xl font-extrabold text-gray-900 mb-6">How the Platform Works</h2>
-          <p className="text-lg text-gray-600">A seamless four-step architectural flow that guarantees zero downtime between citation issuance and resolution.</p>
+          <span className="text-[#8B1A2F] font-bold tracking-wider uppercase text-sm mb-3 block">{t('howToUse.tag')}</span>
+          <h2 className="text-4xl font-extrabold text-gray-900 mb-6">{t('howToUse.title')}</h2>
+          <p className="text-lg text-gray-600">{t('howToUse.subtitle')}</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">

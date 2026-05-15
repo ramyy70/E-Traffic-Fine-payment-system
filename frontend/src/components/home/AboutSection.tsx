@@ -1,6 +1,8 @@
 import { Target, Shield, Zap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const AboutSection = () => {
+  const { t } = useTranslation();
   return (
     <section id="about" className="py-24 bg-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -17,23 +19,23 @@ const AboutSection = () => {
                 <div className="p-3 bg-red-50 text-[#8B1A2F] rounded-lg">
                   <Shield className="w-6 h-6" />
                 </div>
-                <h4 className="font-bold text-gray-900 leading-tight">Digital Transition</h4>
+                <h4 className="font-bold text-gray-900 leading-tight">{t('about.badgeTitle')}</h4>
               </div>
-              <p className="text-sm text-gray-600">Replacing manual ticketing with a centralized, immutable cloud architecture.</p>
+              <p className="text-sm text-gray-600">{t('about.badgeDesc')}</p>
             </div>
           </div>
           
           <div className="flex-1 mt-10 md:mt-0">
-            <span className="text-[#8B1A2F] font-bold tracking-wider uppercase text-sm mb-3 block">About The Initiative</span>
-            <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">Transforming National Traffic Governance</h2>
+            <span className="text-[#8B1A2F] font-bold tracking-wider uppercase text-sm mb-3 block">{t('about.tag')}</span>
+            <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">{t('about.title')}</h2>
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              The E-Traffic SAAS platform is a government-backed initiative designed to modernize the enforcement, tracking, and settlement of traffic violations nationwide. By bridging the gap between field officers, administrative bodies, and citizens, we ensure absolute transparency and efficiency.
+              {t('about.desc')}
             </p>
             
             <div className="space-y-6">
               {[
-                { icon: <Target className="w-5 h-5 text-[#8B1A2F]" />, title: 'Accuracy & Accountability', desc: 'Real-time syncing from officer devices heavily reduces human error and manipulation.' },
-                { icon: <Zap className="w-5 h-5 text-[#8B1A2F]" />, title: 'Instantaneous Processing', desc: 'Fines are logged, citizens are notified, and gateways are prepared in milliseconds.' }
+                { icon: <Target className="w-5 h-5 text-[#8B1A2F]" />, title: t('about.feat1Title'), desc: t('about.feat1Desc') },
+                { icon: <Zap className="w-5 h-5 text-[#8B1A2F]" />, title: t('about.feat2Title'), desc: t('about.feat2Desc') }
               ].map((feature, idx) => (
                 <div key={idx} className="flex items-start gap-4">
                   <div className="mt-1 p-2 bg-gray-50 rounded-lg border border-gray-100">{feature.icon}</div>
